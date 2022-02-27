@@ -12,7 +12,7 @@ class BrandingServiceProvider extends ServiceProvider
     protected BrandingService $branding;
 
     /**
-     * Register application services and hooks.
+     * Register application services and filters.
      */
     public function register(): void
     {
@@ -28,7 +28,7 @@ class BrandingServiceProvider extends ServiceProvider
 
         if ($branding->enabled()) {
             $this->add_action('login_enqueue_scripts', 'enqueue_login_style');
-            $this->add_filter_value('admin_footer_text', "❤ Powered by {$this->branding->powered_by()}");
+            $this->add_filter_value('admin_footer_text', "❤ Powered by {$branding->powered_by()}");
             $this->add_filter_value('login_headerurl', $branding->website());
         }
 
