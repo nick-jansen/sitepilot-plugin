@@ -1,0 +1,46 @@
+{
+    "name": "sitepilot/sitepilot",
+    "description": "A plugin for managing and developing WordPress websites.",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "files": [
+            "includes/functions.php"
+        ],
+        "psr-4": {
+            "Sitepilot\\Plugin\\": "app/",
+            "Sitepilot\\Framework\\": "framework/"
+        }
+    },
+    "require": {
+        "yahnis-elsts/plugin-update-checker": "4.11"
+    },
+    "require-dev": {
+        "coenjacobs/mozart": "^0.7.1",
+        "illuminate/container": "^8.0"
+    },
+    "extra": {
+        "mozart": {
+            "dep_namespace": "Sitepilot\\Framework\\",
+            "dep_directory": "/framework/",
+            "classmap_directory": "/classes/",
+            "classmap_prefix": "SP_Framework_",
+            "packages": [
+                "illuminate/container"
+            ],
+            "delete_vendor_directories": false
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || \"vendor/bin/mozart\" compose",
+            "composer dump-autoload"
+        ],
+        "post-update-cmd": [
+            "[ $COMPOSER_DEV_MODE -eq 0 ] || \"vendor/bin/mozart\" compose",
+            "composer dump-autoload"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+    "author": "Sitepilot",
+    "license": "GPL-3.0-or-later",
+    "devDependencies": {
+        "@babel/preset-react": "^7.16.7",
+        "laravel-mix": "^6.0.39",
+        "tailwindcss": "^3.0.7",
+        "react": "^17.0.2"
+    }
+}
