@@ -35,5 +35,5 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         with:
-          args: /usr/local/bin/deploy plugin remote:files/v1/packages
+          args: /usr/local/bin/deploy plugin sitepilot remote:files/v1/packages
         #if: github.event.release
