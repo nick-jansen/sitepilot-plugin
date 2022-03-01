@@ -39,7 +39,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: ./build/sitepilot.zip
+          path: ./build
 
       - uses: actions/upload-release-asset@v1
         env:
