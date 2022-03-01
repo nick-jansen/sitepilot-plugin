@@ -110,14 +110,6 @@ abstract class ServiceProvider
     }
 
     /**
-     * Proxy to app namespace.
-     */
-    public function namespace(string $path = '', string $separator = '/'): string
-    {
-        return $this->app->namespace($path, $separator);
-    }
-
-    /**
      * Call the given method and inject its dependencies.
      *
      * @param  callable|string  $callback

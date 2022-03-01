@@ -5,24 +5,6 @@ namespace Sitepilot\Framework\Traits;
 trait HasHooks
 {
     /**
-     * Calls the callback functions that have been added to an action hook.
-     */
-    public function action(string $hook, ...$args): void
-    {
-        do_action($this->namespace($hook), ...$args);
-    }
-
-    /**
-     * Calls the callback functions that have been added to a filter hook.
-     *
-     * @param mixed $value
-     */
-    public function filter(string $hook, $value)
-    {
-        return apply_filters($this->namespace($hook), $value);
-    }
-
-    /**
      * Adds a callback to a filter hook.
      */
     public function add_filter(string $hook, $callback, ...$args): void

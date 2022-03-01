@@ -15,6 +15,12 @@ trait HasShortcodes
             $callback = [$this, $callback];
         }
 
-        add_shortcode($this->namespace($tag, '_'), $callback);
+        if (!empty($this->app)) {
+            $app = $this->app;
+        } else {
+            $app = $this;
+        }
+
+        add_shortcode($app->namespace($tag, '_'), $callback);
     }
 }
