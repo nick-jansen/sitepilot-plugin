@@ -43,7 +43,8 @@ class DashboardServiceProvider extends ServiceProvider
             __('Dashboard', 'sitepilot'),
             'publish_posts',
             $slug,
-            [$this, 'render']
+            [$this, 'render'],
+            -99
         );
 
         $this->add_action("admin_print_scripts-{$page_hook_suffix}", '@enqueue_assets');
