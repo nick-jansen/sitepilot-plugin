@@ -1,8 +1,8 @@
 # Sitepilot
 
 <p>
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/sitepilot/sitepilot-plugin/build" alt="Build Status">
-    <img src="https://img.shields.io/github/v/release/sitepilot/sitepilot-plugin" alt="Latest Stable Version">
+    <img src="https://img.shields.io/github/workflow/status/sitepilot/sitepilot-plugin/build" alt="Build Status">
+    <img src="https://img.shields.io/github/v/release/sitepilot/sitepilot-plugin" alt="Latest Release">
     <img src="https://img.shields.io/github/license/sitepilot/sitepilot-plugin" alt="License">
 </p>
 
