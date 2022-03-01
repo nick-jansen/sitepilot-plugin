@@ -1,8 +1,9 @@
 <?php
 
-namespace Sitepilot\Plugin\ClientRole;
+namespace Sitepilot\Plugin\Providers;
 
 use Sitepilot\Framework\Support\ServiceProvider;
+use Sitepilot\Plugin\Services\ClientRoleService;
 
 class ClientRoleServiceProvider extends ServiceProvider
 {

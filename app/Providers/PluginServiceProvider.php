@@ -1,6 +1,6 @@
 <?php
 
-namespace Sitepilot\Plugin;
+namespace Sitepilot\Plugin\Providers;
 
 use Sitepilot\Framework\Support\ServiceProvider;
 
@@ -19,8 +19,6 @@ class PluginServiceProvider extends ServiceProvider
      */
     function enqueue_admin_assets(): void
     {
-        $handle = $this->namespace('', '-');
-
-        wp_enqueue_style($handle, $this->app->public_url('css/admin.css'), [], $this->app->script_version());
+        wp_enqueue_style($this->app->namespace(), $this->app->public_url('css/admin.css'), [], $this->app->script_version());
     }
 }

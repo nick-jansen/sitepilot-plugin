@@ -17,12 +17,12 @@ if (!defined('ABSPATH')) exit;
 require __DIR__ . '/vendor/autoload.php';
 
 new Application('sitepilot', __FILE__, [
-    \Sitepilot\Plugin\PluginServiceProvider::class,
-    \Sitepilot\Plugin\Cache\CacheServiceProvider::class,
-    \Sitepilot\Plugin\Update\UpdateServiceProvider::class,
-    \Sitepilot\Plugin\Branding\BrandingServiceProvider::class,
-    \Sitepilot\Plugin\Dashboard\DashboardServiceProvider::class,
-    \Sitepilot\Plugin\ClientRole\ClientRoleServiceProvider::class    
+    \Sitepilot\Plugin\Providers\PluginServiceProvider::class,
+    \Sitepilot\Plugin\Providers\CacheServiceProvider::class,
+    \Sitepilot\Plugin\Providers\UpdateServiceProvider::class,
+    \Sitepilot\Plugin\Providers\BrandingServiceProvider::class,
+    \Sitepilot\Plugin\Providers\DashboardServiceProvider::class,
+    \Sitepilot\Plugin\Providers\ClientRoleServiceProvider::class
 ]);
 
 if (!function_exists('sitepilot')) {

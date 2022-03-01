@@ -1,7 +1,8 @@
 <?php
 
-namespace Sitepilot\Plugin\Update;
+namespace Sitepilot\Plugin\Providers;
 
+use Sitepilot\Plugin\Services\UpdateService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class UpdateServiceProvider extends ServiceProvider

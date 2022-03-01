@@ -1,8 +1,9 @@
 <?php
 
-namespace Sitepilot\Plugin\Cache;
+namespace Sitepilot\Plugin\Providers;
 
-use Sitepilot\Plugin\Branding\BrandingService;
+use Sitepilot\Plugin\Services\CacheService;
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class CacheServiceProvider extends ServiceProvider

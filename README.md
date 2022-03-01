@@ -16,9 +16,11 @@ You can use this container in your plugin or theme development workflow by creat
 use Sitepilot\Framework\Foundation\Application;
 
 new Application('<namespace>', __FILE__, [
-    \Sitepilot\Plugin\Branding\BrandingServiceProvider::class,
+    \Sitepilot\Plugin\Providers\BrandingServiceProvider::class,
 ]);
 ```
+
+A full example of how to implement the service container in your plugin  can be found in [sitepilot.php](./sitepilot.php) and the [app](./app) folder of this plugin. An example of the implementation in a theme can be found [here](https://github.com/sitepilot/theme).
 
 ### Namespace
 
@@ -37,13 +39,11 @@ Let's take a look at a basic service provider. Within any of your service provid
 ```php 
 namespace Sitepilot\Plugin\Branding;
 
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
 {
-    /**
-     * Register application services.
-     */
     public function register(): void
     {
         $this->app->alias(BrandingService::class, 'branding');
@@ -51,50 +51,99 @@ class BrandingServiceProvider extends ServiceProvider
 }
 ```
 
-This service provider only defines a `register` method, and uses that method to define an alias for Sitepilot\Plugin\Branding\BrandingService in the service container. Now you can access this service using the `branding` property on the application instance. If you're not yet familiar with Laravel's service container, check out its [documentation](https://laravel.com/docs/8.x/providers).
+This service provider only defines a `register` method, and uses that method to define an alias for Sitepilot\Plugin\Services\BrandingService in the service container. Now you can access this service using the `branding` property on the application instance. If you're not familiar with Laravel's service container, check out its [documentation](https://laravel.com/docs/8.x/providers).
 
 #### The boot method
 
 So, what if we need to register WordPress hooks, filters and shortcodes within our service provider? This should be done within the boot method. This method is called after all other service providers have been registered, meaning you have access to all other services that have been registered by the framework. You may type-hint dependencies for your service provider's boot method. The service container will automatically inject any dependencies you need.
 
 ```php
-namespace Sitepilot\Plugin\Branding;
+namespace Sitepilot\Plugin\Providers;
 
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
 {
-    /**
-     * The branding service instance.
-     */
     protected BrandingService $branding;
 
-    /**
-     * Bootstrap application services and hooks.
-     */
     public function boot(BrandingService $branding): void
     {
         $this->branding = $branding;
-
-        if ($branding->enabled()) {
-            $this->add_filter_value('admin_footer_text', "❤ Powered by {$branding->powered_by()}");
-            $this->add_filter_value('login_headerurl', $branding->website());
-        }
-
-        $this->add_shortcode('copyright', 'copyright_shortcode');
-    }
-
-    /**
-     * Copyright shortcode.
-     */
-    public function copyright_shortcode($atts): string
-    {
-        $atts = shortcode_atts([
-            'separator' => '&middot;',
-            'text' => 'Powered by'
-        ], $atts);
-
-        return sprintf('&copy; %s %s %s %s <a href="%s" target="_blank">%s</a>', get_bloginfo('name'), date('Y'), $atts['separator'], $atts['text'], $this->branding->website(), $this->branding->powered_by());
     }
 }
 ```
+
+#### Hooks & Shortcodes
+
+Each service provider can register WordPress hooks and shortcodes. The hook and shortcode names are automatically namespaced within the application's namespace and the callbacks are bound the instance of the service provider.
+
+##### Actions
+
+```php
+class UpdateServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->add_action('init', '@build_update_checker', 99);
+
+        $this->app->action('update/booted');
+    }
+
+    public function build_update_checker(UpdateService $update): void
+    {
+        //
+    }
+}
+```
+
+This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` function automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
+
+_Note: prefixing action callback with an @ sign only works for actions without any arguments._
+
+After all booting functions are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
+
+##### Filters
+
+```php
+class BrandingServiceProvider extends ServiceProvider
+{
+    public function boot(BrandingService $branding): void
+    {
+        $website = $this->app->filter('branding/website', 'https://sitepilot.io');
+
+        $this->add_filter('update_footer', 'filter_admin_footer_version', 11);
+        $this->add_filter_value('login_headerurl', $website);
+    }
+
+    public function filter_admin_footer_version(): string 
+    {
+        //
+    }
+}
+```
+
+This service provider registers a filter to the WordPress `update_footer` and `login_headerurl` filter hook. The `<app-namespace>/branding/website` filter is applied to the value of `$website` and the `login_headerurl` filter automatically receives the value of `$website` instead of running a callback. 
+
+##### Shortcodes
+
+```php
+class BrandingServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->add_shortcode('copyright', 'copyright_shortcode');
+    }
+
+    public function copyright_shortcode($atts): string 
+    {
+        $atts = shortcode_atts([
+            // defaults
+        ], $atts);
+
+        return sprintf('&copy; %s %s', get_bloginfo('name'), date('Y'));
+    }
+}
+```
+
+This service provider registers the shortcode `<app-namespace>_copyright` and the provider's `copyright_shortcode` function is called when the shortcode is rendered.

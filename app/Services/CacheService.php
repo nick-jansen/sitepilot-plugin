@@ -1,6 +1,6 @@
 <?php
 
-namespace Sitepilot\Plugin\Cache;
+namespace Sitepilot\Plugin\Services;
 
 use Sitepilot\Framework\Foundation\Application;
 

@@ -1,7 +1,7 @@
 <?php
 
-use Sitepilot\Plugin\Cache\CacheService;
-use Sitepilot\Plugin\Branding\BrandingService;
+use Sitepilot\Plugin\Services\CacheService;
+use Sitepilot\Plugin\Services\BrandingService;
 
 if (!function_exists('sitepilot_cache')) {
     function sitepilot_cache(): CacheService
