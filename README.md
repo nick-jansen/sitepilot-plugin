@@ -1,5 +1,11 @@
 # Sitepilot
 
+<p>
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/sitepilot/sitepilot-plugin/build" alt="Build Status">
+    <img src="https://img.shields.io/github/v/release/sitepilot/sitepilot-plugin" alt="Latest Stable Version">
+    <img src="https://img.shields.io/github/license/sitepilot/sitepilot-plugin" alt="License">
+</p>
+
 Brings the powers of Sitepilot directly to your WordPress website. It will revolutionize the way you use, manage and develop WordPress sites. This plugin is optimized for use on the [Sitepilot](https://sitepilot.io) managed WordPress hosting platform but should also work on other platforms.
 
 [🚀 Download the latest release here.](https://github.com/sitepilot/sitepilot-plugin/releases)
