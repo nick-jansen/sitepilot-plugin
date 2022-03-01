@@ -1,9 +1,10 @@
 <?php
 
-namespace Sitepilot\Plugin\Dashboard;
+namespace Sitepilot\Plugin\Providers;
 
-use Sitepilot\Plugin\Cache\CacheService;
-use Sitepilot\Plugin\Branding\BrandingService;
+use Sitepilot\Plugin\Services\CacheService;
+use Sitepilot\Plugin\Services\BrandingService;
+use Sitepilot\Plugin\Services\DashboardService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class DashboardServiceProvider extends ServiceProvider

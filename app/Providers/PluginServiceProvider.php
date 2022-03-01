@@ -1,6 +1,6 @@
 <?php
 
-namespace Sitepilot\Plugin;
+namespace Sitepilot\Plugin\Providers;
 
 use Sitepilot\Framework\Support\ServiceProvider;
 

@@ -16,9 +16,11 @@ You can use this container in your plugin or theme development workflow by creat
 use Sitepilot\Framework\Foundation\Application;
 
 new Application('<namespace>', __FILE__, [
-    \Sitepilot\Plugin\Branding\BrandingServiceProvider::class,
+    \Sitepilot\Plugin\Providers\BrandingServiceProvider::class,
 ]);
 ```
+
+A full example of how to implement the service container in your plugin  can be found in [sitepilot.php](./sitepilot.php) and the [app](./app) folder of this plugin. An example of the implementation in a theme can be found [here](https://github.com/sitepilot/theme).
 
 ### Namespace
 
@@ -37,6 +39,7 @@ Let's take a look at a basic service provider. Within any of your service provid
 ```php 
 namespace Sitepilot\Plugin\Branding;
 
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
@@ -51,15 +54,16 @@ class BrandingServiceProvider extends ServiceProvider
 }
 ```
 
-This service provider only defines a `register` method, and uses that method to define an alias for Sitepilot\Plugin\Branding\BrandingService in the service container. Now you can access this service using the `branding` property on the application instance. If you're not yet familiar with Laravel's service container, check out its [documentation](https://laravel.com/docs/8.x/providers).
+This service provider only defines a `register` method, and uses that method to define an alias for Sitepilot\Plugin\Services\BrandingService in the service container. Now you can access this service using the `branding` property on the application instance. If you're not familiar with Laravel's service container, check out its [documentation](https://laravel.com/docs/8.x/providers).
 
 #### The boot method
 
 So, what if we need to register WordPress hooks, filters and shortcodes within our service provider? This should be done within the boot method. This method is called after all other service providers have been registered, meaning you have access to all other services that have been registered by the framework. You may type-hint dependencies for your service provider's boot method. The service container will automatically inject any dependencies you need.
 
 ```php
-namespace Sitepilot\Plugin\Branding;
+namespace Sitepilot\Plugin\Providers;
 
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider

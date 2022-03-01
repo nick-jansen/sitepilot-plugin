@@ -1,7 +1,8 @@
 <?php
 
-namespace Sitepilot\Plugin\Branding;
+namespace Sitepilot\Plugin\Providers;
 
+use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
