@@ -97,11 +97,11 @@ class UpdateServiceProvider extends ServiceProvider
 }
 ```
 
-This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` function automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
+This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` method automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
 
 _Note: prefixing action callback with an @ sign only works for actions without any arguments._
 
-After all booting functions are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
+After all booting methods are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
 
 ##### Filters
 
@@ -146,4 +146,4 @@ class BrandingServiceProvider extends ServiceProvider
 }
 ```
 
-This service provider registers the shortcode `<app-namespace>_copyright` and the provider's `copyright_shortcode` function is called when the shortcode is rendered.
+This service provider registers the shortcode `<app-namespace>_copyright` and the provider's `copyright_shortcode` method is called when the shortcode is rendered.
