@@ -74,6 +74,8 @@ class BrandingServiceProvider extends ServiceProvider
 }
 ```
 
+_Also the [branding service](./app/Services/BrandingService.php) automatically receives it's dependencies using constructor dependency injection._
+
 #### Hooks & Shortcodes
 
 Each service provider can register WordPress hooks and shortcodes. The hook and shortcode names are automatically namespaced within the application's namespace and the callbacks are bound the instance of the service provider.
@@ -99,9 +101,9 @@ class UpdateServiceProvider extends ServiceProvider
 
 This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` method automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
 
-_Note: prefixing action callback with an @ sign only works for actions without any arguments._
-
 After all booting methods are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
+
+_Note: prefixing action callback with an @ sign only works for actions without arguments. The service container does not know how to resolve these arguments._
 
 ##### Filters
 
