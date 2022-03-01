@@ -33,14 +33,13 @@ jobs:
 
       - uses: sitepilot/action-deploy@main
         env:
-          DEPLOY: ${{ github.event.release }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         with:
-          args: /usr/local/bin/deploy plugin sitepilot remote:files/v1/packages
+          args: deploy plugin sitepilot remote:files/v1/packages
 
       - uses: actions/upload-artifact@v2
         with:
-          name: sitepilot
+          name: build
           path: ./build
 
       - uses: actions/upload-release-asset@v1
