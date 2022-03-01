@@ -74,18 +74,13 @@ class BrandingServiceProvider extends ServiceProvider
 }
 ```
 
-#### Hooks
+#### Hooks & Shortcodes
 
-Each service provider can register WordPress hooks. The hook names are automatically namespaced within the application's namespace and the callbacks are bound the instance of the service provider.
+Each service provider can register WordPress hooks and shortcodes. The hook and shortcode names are automatically namespaced within the application's namespace and the callbacks are bound the instance of the service provider.
 
 ##### Actions
 
 ```php
-namespace Sitepilot\Plugin\Providers;
-
-use Sitepilot\Plugin\Services\UpdateService;
-use Sitepilot\Framework\Support\ServiceProvider;
-
 class UpdateServiceProvider extends ServiceProvider
 {
     public function boot(): void
@@ -104,18 +99,13 @@ class UpdateServiceProvider extends ServiceProvider
 
 This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` function automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
 
-_Note: prefixing functions with an @ sign only works for actions without any arguments._
+_Note: prefixing action callback with an @ sign only works for actions without any arguments._
 
 After all booting functions are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
 
 ##### Filters
 
 ```php
-namespace Sitepilot\Plugin\Providers;
-
-use Sitepilot\Plugin\Services\BrandingService;
-use Sitepilot\Framework\Support\ServiceProvider;
-
 class BrandingServiceProvider extends ServiceProvider
 {
     public function boot(BrandingService $branding): void
@@ -134,3 +124,26 @@ class BrandingServiceProvider extends ServiceProvider
 ```
 
 This service provider registers a filter to the WordPress `update_footer` and `login_headerurl` filter hook. The `<app-namespace>/branding/website` filter is applied to the value of `$website` and the `login_headerurl` filter automatically receives the value of `$website` instead of running a callback. 
+
+##### Shortcodes
+
+```php
+class BrandingServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->add_shortcode('copyright', 'copyright_shortcode');
+    }
+
+    public function copyright_shortcode($atts): string 
+    {
+        $atts = shortcode_atts([
+            // defaults
+        ], $atts);
+
+        return sprintf('&copy; %s %s', get_bloginfo('name'), date('Y'));
+    }
+}
+```
+
+This service provider registers the shortcode `<app-namespace>_copyright` and the provider's `copyright_shortcode` function is called when the shortcode is rendered.
