@@ -80,25 +80,9 @@ class BrandingServiceProvider extends ServiceProvider
     {
         $this->branding = $branding;
 
-        if ($branding->enabled()) {
-            $this->add_filter_value('admin_footer_text', "❤ Powered by {$branding->powered_by()}");
+        if ($branding->enabled()) {=
             $this->add_filter_value('login_headerurl', $branding->website());
         }
-
-        $this->add_shortcode('copyright', 'copyright_shortcode');
-    }
-
-    /**
-     * Copyright shortcode.
-     */
-    public function copyright_shortcode($atts): string
-    {
-        $atts = shortcode_atts([
-            'separator' => '&middot;',
-            'text' => 'Powered by'
-        ], $atts);
-
-        return sprintf('&copy; %s %s %s %s <a href="%s" target="_blank">%s</a>', get_bloginfo('name'), date('Y'), $atts['separator'], $atts['text'], $this->branding->website(), $this->branding->powered_by());
     }
 }
 ```
