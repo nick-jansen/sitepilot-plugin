@@ -80,7 +80,7 @@ class BrandingServiceProvider extends ServiceProvider
     {
         $this->branding = $branding;
 
-        if ($branding->enabled()) {=
+        if ($branding->enabled()) {
             $this->add_filter_value('login_headerurl', $branding->website());
         }
     }
