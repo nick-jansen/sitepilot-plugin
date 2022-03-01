@@ -44,9 +44,6 @@ use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
 {
-    /**
-     * Register application services.
-     */
     public function register(): void
     {
         $this->app->alias(BrandingService::class, 'branding');
@@ -68,21 +65,72 @@ use Sitepilot\Framework\Support\ServiceProvider;
 
 class BrandingServiceProvider extends ServiceProvider
 {
-    /**
-     * The branding service instance.
-     */
     protected BrandingService $branding;
 
-    /**
-     * Bootstrap application services and hooks.
-     */
     public function boot(BrandingService $branding): void
     {
         $this->branding = $branding;
-
-        if ($branding->enabled()) {
-            $this->add_filter_value('login_headerurl', $branding->website());
-        }
     }
 }
 ```
+
+#### Hooks
+
+Each service provider can register WordPress hooks. The hook names are automatically namespaced within the application's namespace and the callbacks are bound the instance of the service provider.
+
+##### Actions
+
+```php
+namespace Sitepilot\Plugin\Providers;
+
+use Sitepilot\Plugin\Services\UpdateService;
+use Sitepilot\Framework\Support\ServiceProvider;
+
+class UpdateServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        $this->add_action('init', '@build_update_checker', 99);
+
+        $this->app->action('update/booted');
+    }
+
+    public function build_update_checker(UpdateService $update): void
+    {
+        //
+    }
+}
+```
+
+This service provider registers an action to the WordPress `init` action hook. The `build_update_checker` function automatically recieves it's dependencies because the action callback is prefixed with an @ sign.
+
+_Note: prefixing functions with an @ sign only works for actions without any arguments._
+
+After all booting functions are executed the service provider runs all callbacks registered to the `<app-namespace>/update/booted` action hook.
+
+##### Filters
+
+```php
+namespace Sitepilot\Plugin\Providers;
+
+use Sitepilot\Plugin\Services\BrandingService;
+use Sitepilot\Framework\Support\ServiceProvider;
+
+class BrandingServiceProvider extends ServiceProvider
+{
+    public function boot(BrandingService $branding): void
+    {
+        $website = $this->app->filter('branding/website', 'https://sitepilot.io');
+
+        $this->add_filter('update_footer', 'filter_admin_footer_version', 11);
+        $this->add_filter_value('login_headerurl', $website);
+    }
+
+    public function filter_admin_footer_version(): string 
+    {
+        //
+    }
+}
+```
+
+This service provider registers a filter to the WordPress `update_footer` and `login_headerurl` filter hook. The `<app-namespace>/branding/website` filter is applied to the value of `$website` and the `login_headerurl` filter automatically receives the value of `$website` instead of running a callback. 
