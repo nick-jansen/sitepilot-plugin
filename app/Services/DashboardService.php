@@ -24,6 +24,6 @@ class DashboardService
      */
     public function support_enabled(): bool
     {
-        return $this->app->filter('dasbhoard/support_enabled', !empty(getenv('SITEPILOT_SITE')));
+        return $this->app->filter('dashboard/support_enabled', !empty(getenv('SITEPILOT_SITE')));
     }
 }
