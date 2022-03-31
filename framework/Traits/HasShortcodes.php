@@ -5,11 +5,18 @@ namespace Sitepilot\Framework\Traits;
 trait HasShortcodes
 {
     /**
+     * The shortcode namespace.
+     * 
+     * @var ?string
+     */
+    protected $shortcode_namespace = null;
+
+    /**
      * Add namespaced shortcode.
      *
      * @param callable|string $callback
      */
-    public function add_shortcode(string $tag, $callback): void
+    public function add_shortcode(string $tag, $callback, $namespaced = true): void
     {
         if (is_string($callback)) {
             $callback = [$this, $callback];
@@ -21,6 +28,11 @@ trait HasShortcodes
             $app = $this;
         }
 
-        add_shortcode($app->namespace($tag, '_'), $callback);
+        add_shortcode(
+            $this->shortcode_namespace
+                ? $this->shortcode_namespace . '_' . $tag
+                : $app->namespace($tag, '_'),
+            $callback
+        );
     }
 }
