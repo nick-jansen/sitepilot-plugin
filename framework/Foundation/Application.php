@@ -340,7 +340,7 @@ class Application
     {
         $themes_dir = dirname(get_template_directory());
 
-        return strpos($this->base_path, $themes_dir) === true;
+        return strpos($this->base_path, $themes_dir) !== false;
     }
 
     /**
@@ -377,5 +377,23 @@ class Application
     public function filter(string $hook, $value)
     {
         return apply_filters($this->namespace($hook), $value);
+    }
+
+    /**
+     * Get the contents of a template.
+     */
+    public function template(string $template, string $name = null, array $args = array()): string
+    {
+        if ($this->is_theme()) {
+            ob_start();
+            get_template_part($template, $name, array_merge(['app' => $this], $args));
+            $template = ob_get_contents();
+            ob_end_clean();
+
+            return $template;
+        } else {
+            #toDo
+            return '';
+        }
     }
 }
