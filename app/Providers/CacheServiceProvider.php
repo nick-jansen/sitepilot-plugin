@@ -18,7 +18,7 @@ class CacheServiceProvider extends ServiceProvider
         if (
             !$cache->is_page_cache_enabled()
             && !$cache->is_object_cache_enabled()
-            && !current_user_can($cache->capability())
+            || !current_user_can($cache->capability())
         ) {
             return;
         }
