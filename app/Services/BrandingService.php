@@ -56,7 +56,7 @@ class BrandingService
      */
     public function logo(): string
     {
-        return $this->app->filter('branding/logo', $this->app->public_url('img/sitepilot-logo.png'));
+        return $this->app->filter('branding/logo', $this->app->public_url('img/logo.svg') . '?v=' . $this->app->script_version());
     }
 
     /**
@@ -64,7 +64,15 @@ class BrandingService
      */
     public function icon(): string
     {
-        return $this->app->filter('branding/icon', $this->app->public_url('img/sitepilot-icon.png'));
+        return $this->app->filter('branding/icon', $this->app->public_url('img/icon.svg') . '?v=' . $this->app->script_version());
+    }
+
+    /**
+     * Get the branding menu icon.
+     */
+    public function menu_icon(): string
+    {
+        return $this->app->filter('branding/menu_icon', $this->app->public_url('img/menu-icon.svg') . '?v=' . $this->app->script_version());
     }
 
     /**

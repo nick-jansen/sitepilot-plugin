@@ -34,7 +34,7 @@ class DashboardServiceProvider extends ServiceProvider
             'publish_posts',
             $slug,
             '',
-            false,
+            $branding->menu_icon(),
             2
         );
 
@@ -54,7 +54,7 @@ class DashboardServiceProvider extends ServiceProvider
     /**
      * Enqueue dashboard assets.
      */
-    function enqueue_assets(
+    public function enqueue_assets(
         CacheService $cache,
         BrandingService $branding,
         DashboardService $dashboard
