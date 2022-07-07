@@ -12,6 +12,21 @@ class LitespeedCacheService
     private Application $app;
 
     /**
+     * The default excluded cookies.
+     */
+    private array $default_exclude_cookies = [
+        'wordpress_[a-f0-9]+',
+        'comment_author',
+        'wp-postpass',
+        'wordpress_no_cache',
+        'wordpress_logged_in',
+        'woocommerce_cart_hash',
+        'woocommerce_items_in_cart',
+        'woocommerce_recently_viewed',
+        'edd_items_in_cart'
+    ];
+
+    /**
      * The default excluded keywords.
      */
     private array $default_exclude_keywords = [
@@ -117,11 +132,11 @@ class LitespeedCacheService
     }
 
     /**
-     * Get the ignored queries.
+     * Get the excluded cookies.
      */
-    public function ignore_queries(): array
+    public function exclude_cookies(): array
     {
-        return $this->app->filter('cache/ignore_queries', $this->default_ignore_queries);
+        return $this->app->filter('cache/exclude_cookies', $this->default_exclude_cookies);
     }
 
     /**
@@ -130,6 +145,14 @@ class LitespeedCacheService
     public function exclude_keywords(): array
     {
         return $this->app->filter('cache/exclude_keywords', $this->default_exclude_keywords);
+    }
+
+    /**
+     * Get the ignored queries.
+     */
+    public function ignore_queries(): array
+    {
+        return $this->app->filter('cache/ignore_queries', $this->default_ignore_queries);
     }
 
     /**
@@ -191,6 +214,16 @@ class LitespeedCacheService
             return false;
         }
 
+        // Check cookies
+        if (!empty($_COOKIE)) {
+            $cookies_regex = join('|', $this->exclude_cookies());
+            $cookies_regex = "/^($cookies_regex)$/";
+
+            if (sizeof(preg_grep($cookies_regex, array_keys($_COOKIE))) > 0) {
+                return false;
+            }
+        }
+
         // Check URI on keywords
         if (!empty($_SERVER['REQUEST_URI'])) {
             foreach ($this->exclude_keywords() as $keyword) {
@@ -206,18 +239,6 @@ class LitespeedCacheService
             $queries_regex = "/^($queries_regex)$/";
 
             if (sizeof(preg_grep($queries_regex, array_keys($_GET), PREG_GREP_INVERT)) > 0) {
-                return false;
-            }
-        }
-
-        // Check cookies
-        if (!empty($_COOKIE)) {
-            $cookies_regex =
-                '/(wordpress_[a-f0-9]+|comment_author|wp-postpass|wordpress_no_cache|wordpress_logged_in|woocommerce_cart_hash|woocommerce_items_in_cart|woocommerce_recently_viewed|edd_items_in_cart)/';
-
-            $cookies = implode('', array_keys($_COOKIE));
-
-            if (preg_match($cookies_regex, $cookies)) {
                 return false;
             }
         }
