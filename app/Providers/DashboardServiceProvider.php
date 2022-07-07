@@ -82,7 +82,7 @@ class DashboardServiceProvider extends ServiceProvider
 
         $cache_status = __('Off', 'sitepilot');
         if ($cache->is_page_cache_enabled() || $litespeedCache->is_enabled()) {
-            $cache_status = sprintf(__('Sitepilot v%s'), $this->app->version());
+            $cache_status = sprintf('%s v%s', $branding->name(), $this->app->version());
         } elseif (defined('LSCWP_V')) {
             $cache_status = sprintf(__('LiteSpeed v%s'), LSCWP_V);
         }
