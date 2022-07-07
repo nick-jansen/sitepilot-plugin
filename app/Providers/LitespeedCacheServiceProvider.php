@@ -101,9 +101,9 @@ class LitespeedCacheServiceProvider extends ServiceProvider
     /**
      * Purge page cache.
      */
-    public function purge_page_cache(): void
+    public function purge_page_cache(): bool
     {
-        $this->cache->purge('*');
+        return $this->cache->purge('*');
     }
 
     /**
