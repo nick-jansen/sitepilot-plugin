@@ -22,7 +22,8 @@ new Application('sitepilot', __FILE__, [
     \Sitepilot\Plugin\Providers\UpdateServiceProvider::class,
     \Sitepilot\Plugin\Providers\BrandingServiceProvider::class,
     \Sitepilot\Plugin\Providers\DashboardServiceProvider::class,
-    \Sitepilot\Plugin\Providers\ClientRoleServiceProvider::class
+    \Sitepilot\Plugin\Providers\ClientRoleServiceProvider::class,
+    \Sitepilot\Plugin\Providers\LitespeedCacheServiceProvider::class
 ]);
 
 if (!function_exists('sitepilot')) {

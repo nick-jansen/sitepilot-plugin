@@ -6,6 +6,7 @@ use Sitepilot\Plugin\Services\CacheService;
 use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Plugin\Services\DashboardService;
 use Sitepilot\Framework\Support\ServiceProvider;
+use Sitepilot\Plugin\Services\LitespeedCacheService;
 
 class DashboardServiceProvider extends ServiceProvider
 {
@@ -57,7 +58,8 @@ class DashboardServiceProvider extends ServiceProvider
     public function enqueue_assets(
         CacheService $cache,
         BrandingService $branding,
-        DashboardService $dashboard
+        DashboardService $dashboard,
+        LitespeedCacheService $litespeedCache
     ): void {
         $id = $this->app->namespace('dashboard', '-');
 
@@ -78,21 +80,28 @@ class DashboardServiceProvider extends ServiceProvider
 
         global $wp_version;
 
+        $cache_status = __('Off', 'sitepilot');
+        if ($cache->is_page_cache_enabled() || $litespeedCache->is_enabled()) {
+            $cache_status = sprintf(__('Sitepilot v%s'), $this->app->version());
+        } elseif (defined('LSCWP_V')) {
+            $cache_status = sprintf(__('LiteSpeed v%s'), LSCWP_V);
+        }
+
         wp_localize_script(
             $id,
             'sitepilot',
             array(
-                'version' => $this->app->version(),
+                'version' => 'v' . $this->app->version(),
                 'plugin_url' => $this->app->url(),
                 'branding_name' => $branding->name(),
                 'support_email' => $branding->support_email(),
                 'support_url' => $branding->support_website(),
                 'server_name' => gethostname(),
-                'php_version' => phpversion(),
-                'wp_version' => $wp_version,
+                'php_version' => 'v' . phpversion(),
+                'wp_version' => 'v' . $wp_version,
                 'powered_by' => $branding->powered_by(),
                 'support_enabled' => $dashboard->support_enabled(),
-                'cache_status' => $cache->is_page_cache_enabled() ? __('On', 'sitepilot') : __('Off', 'sitepilot')
+                'cache_status' => $cache_status
             )
         );
     }
