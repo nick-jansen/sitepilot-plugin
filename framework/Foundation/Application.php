@@ -19,16 +19,19 @@ class Application
         InteractsWithProviders;
 
     /**
-     * The cached application version.
+     * The application namespace.
      */
-    protected ?string $version = null;
+    protected string $namespace;
 
     /**
-     * The registered app instances.
-     *
-     * @var array
+     * The application type (theme or plugin).
      */
-    static protected array $loaded_apps = [];
+    protected string $type;
+
+    /**
+     * The application meta data.
+     */
+    protected array $meta;
 
     /**
      * The path to the application boot file.
@@ -44,11 +47,6 @@ class Application
      * The base url to the application.
      */
     protected string $base_url;
-
-    /**
-     * The application namespace.
-     */
-    protected string $namespace;
 
     /**
      * The application boot hook.
@@ -75,6 +73,8 @@ class Application
         $this->container = new Container;
 
         $this->namespace = $namespace;
+
+        $this->set_type($file);
 
         $this->set_paths($file);
 
@@ -114,6 +114,37 @@ class Application
     }
 
     /**
+     * Determine the application type.
+     */
+    public function set_type(string $file): void
+    {
+        $stylesheet = dirname($file) . '/style.css';
+
+        if (file_exists($stylesheet)) {
+            $meta = get_file_data($stylesheet, [
+                'name' =>  'Theme Name',
+                'version' => 'Version',
+                'template' => 'Template'
+            ], 'theme');
+
+            if (!empty($meta['name'])) {
+                $this->type = 'theme';
+                $this->meta = $meta;
+                return;
+            }
+        }
+
+        // Fallback to plugin
+        $meta = get_file_data($file, [
+            'name' =>  'Plugin Name',
+            'version' => 'Version'
+        ], 'plugin');
+
+        $this->type = 'plugin';
+        $this->meta =  $meta;
+    }
+
+    /**
      * Set the base paths for the application.
      */
     public function set_paths(string $file): void
@@ -121,9 +152,13 @@ class Application
         $this->file = $file;
 
         if ($this->is_theme()) {
-            $theme = wp_get_theme($this->namespace);
-            $this->base_path = $theme->get_stylesheet_directory();
-            $this->base_url = $theme->get_stylesheet_directory_uri();
+            if (!empty($this->meta['template'])) {
+                $this->base_path = get_stylesheet_directory();
+                $this->base_url = get_stylesheet_directory_uri();
+            } else {
+                $this->base_path = get_template_directory();
+                $this->base_url = get_template_directory_uri();
+            }
         } else {
             $this->base_path = WP_PLUGIN_DIR . '/' . $this->namespace;
             $this->base_url = plugins_url($this->namespace);
@@ -220,24 +255,7 @@ class Application
      */
     public function version(): ?string
     {
-        if ($this->version) {
-            return $this->version;
-        }
-
-        if ($this->is_plugin()) {
-            $plugin = get_file_data($this->file, [
-                'version' => 'Version'
-            ], 'plugin');
-
-            $version = $plugin['version'] ?? null;
-        } else {
-            $theme = wp_get_theme($this->namespace);
-            $version = $theme->get('Version') ? $theme->get('Version') : null;
-        }
-
-        $this->version = $version;
-
-        return $this->version;
+        return $this->meta['version'];
     }
 
     /**
@@ -331,7 +349,7 @@ class Application
      */
     public function is_plugin(): bool
     {
-        return !$this->is_theme();
+        return $this->type === 'plugin';
     }
 
     /**
@@ -339,8 +357,7 @@ class Application
      */
     public function is_theme(): bool
     {
-        return get_template() == $this->namespace
-            || get_stylesheet() == $this->namespace;
+        return $this->type === 'theme';
     }
 
     /**
