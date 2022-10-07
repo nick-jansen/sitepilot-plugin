@@ -119,13 +119,14 @@ class Application
     public function set_paths(string $file): void
     {
         $this->file = $file;
-        $this->base_path = dirname($file);
 
-        if ($this->is_plugin()) {
-            $this->base_url = plugins_url('', $this->file);
-        } else {
-            $theme = wp_get_theme(basename($this->path()));
+        if ($this->is_theme()) {
+            $theme = wp_get_theme($this->namespace);
+            $this->base_path = $theme->get_stylesheet_directory();
             $this->base_url = $theme->get_stylesheet_directory_uri();
+        } else {
+            $this->base_path = WP_PLUGIN_DIR . '/' . $this->namespace;
+            $this->base_url = plugins_url($this->namespace);
         }
     }
 
@@ -230,7 +231,7 @@ class Application
 
             $version = $plugin['version'] ?? null;
         } else {
-            $theme = wp_get_theme(basename($this->path()));
+            $theme = wp_get_theme($this->namespace);
             $version = $theme->get('Version') ? $theme->get('Version') : null;
         }
 
@@ -330,7 +331,7 @@ class Application
      */
     public function is_plugin(): bool
     {
-        return strpos($this->base_path, WP_PLUGIN_DIR) !== false;
+        return !$this->is_theme();
     }
 
     /**
@@ -338,9 +339,8 @@ class Application
      */
     public function is_theme(): bool
     {
-        $themes_dir = dirname(get_template_directory());
-
-        return strpos($this->base_path, $themes_dir) !== false;
+        return get_template() == $this->namespace
+            || get_stylesheet() == $this->namespace;
     }
 
     /**
