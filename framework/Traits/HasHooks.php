@@ -7,7 +7,7 @@ trait HasHooks
     /**
      * Adds a callback to a filter hook.
      */
-    public function add_filter(string $hook, $callback, ...$args): void
+    public function add_filter(string $hook, string | callable $callback, ...$args): void
     {
         if (is_string($callback)) {
             $callback = [$this, $callback];
@@ -33,7 +33,7 @@ trait HasHooks
      *
      * @param mixed $callback
      */
-    public function add_action(string $hook, $callback, int $priority = 10, int $accepted_args = 1): void
+    public function add_action(string $hook, string | callable $callback, int $priority = 10, int $accepted_args = 1): void
     {
         if (is_string($callback) && substr($callback, 0, 1) == '@') {
             add_action($hook, function () use ($callback) {
