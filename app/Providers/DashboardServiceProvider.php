@@ -6,6 +6,7 @@ use Sitepilot\Plugin\Services\CacheService;
 use Sitepilot\Plugin\Services\BrandingService;
 use Sitepilot\Plugin\Services\DashboardService;
 use Sitepilot\Framework\Support\ServiceProvider;
+use Sitepilot\Plugin\Services\EdgeCacheService;
 use Sitepilot\Plugin\Services\LitespeedCacheService;
 
 class DashboardServiceProvider extends ServiceProvider
@@ -56,11 +57,13 @@ class DashboardServiceProvider extends ServiceProvider
      * Enqueue dashboard assets.
      */
     public function enqueue_assets(
-        CacheService $cache,
-        BrandingService $branding,
-        DashboardService $dashboard,
-        LitespeedCacheService $litespeedCache
-    ): void {
+        CacheService          $cache,
+        BrandingService       $branding,
+        DashboardService      $dashboard,
+        LitespeedCacheService $litespeedCache,
+        EdgeCacheService      $edgeCacheService
+    ): void
+    {
         $id = $this->app->namespace('dashboard', '-');
 
         wp_enqueue_style(
@@ -80,11 +83,13 @@ class DashboardServiceProvider extends ServiceProvider
 
         global $wp_version;
 
-        $cache_status = __('Off', 'sitepilot');
-        if ($cache->is_page_cache_enabled() || $litespeedCache->is_enabled()) {
-            $cache_status = sprintf('%s v%s', $branding->name(), $this->app->version());
-        } elseif (defined('LSCWP_V')) {
-            $cache_status = sprintf(__('LiteSpeed v%s'), LSCWP_V);
+        $cache_type = __('Off', 'sitepilot');
+        if ($cache->is_page_cache_enabled()) {
+            $cache_type = __('Local ', 'sitepilot');
+        } else if ($edgeCacheService->is_enabled()) {
+            $cache_type = __('Edge ⚡️', 'sitepilot');
+        } else if ($litespeedCache->is_enabled() || defined('LSCWP_V')) {
+            $cache_type = __('Litespeed', 'sitepilot');
         }
 
         wp_localize_script(
@@ -101,7 +106,7 @@ class DashboardServiceProvider extends ServiceProvider
                 'wp_version' => 'v' . $wp_version,
                 'powered_by' => $branding->powered_by(),
                 'support_enabled' => $dashboard->support_enabled(),
-                'cache_status' => $cache_status
+                'cache_type' => $cache_type
             )
         );
     }

@@ -109,10 +109,10 @@ class App extends Component {
                         </tr>
                         <tr>
                             <td class="sp-py-2 sp-whitespace-nowrap sp-pr-4">
-                                <strong>{__('Cache Plugin', 'sitepilot')}</strong>
+                                <strong>{__('Cache Type', 'sitepilot')}</strong>
                             </td>
                             <td class="sp-py-2 sp-whitespace-nowrap">
-                                {sitepilot.cache_status}
+                                {sitepilot.cache_type}
                             </td>
                         </tr>
                         <tr>
